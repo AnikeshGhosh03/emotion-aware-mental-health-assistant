@@ -1,0 +1,22 @@
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.csv
+
+# Models / Large files
+models/
+voice_to_text/models/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
