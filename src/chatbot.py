@@ -1,11 +1,14 @@
 # chatbot.py
+
 from src.preprocessing import clean_text
 from src.emotion_model import detect_emotion
 from src.llm_response import get_ollama_response
 from src.text_to_speech import text_to_speech
-import csv, os
+from src.db.mongo_client import save_chat, get_recent_chats
+
 
 # ------------------- Negation Logic -------------------
+
 negative_adjectives = [
     "unhappy", "sad", "angry", "upset", "disappointed", "tired", "afraid",
     "uncomfortable", "depressed", "nervous", "worried", "stressed", "annoyed",
@@ -13,58 +16,64 @@ negative_adjectives = [
     "scared", "terrified", "embarrassed", "ashamed", "hurt"
 ]
 
+
 def handle_negation(sentence):
     """If negation precedes a negative adjective → return 'neutral'."""
     words = sentence.lower().split()
+
     for i, word in enumerate(words):
         if word == "not" and i + 1 < len(words):
+
             next_word = words[i + 1]
+
             if next_word in negative_adjectives:
                 return "neutral"
-    return None  # no correction needed
+
+    return None
+
 # ------------------------------------------------------
 
-conversation_memory = []
-LOG_FILE = "logs/chat_history.csv"
-os.makedirs("logs", exist_ok=True)
 
-# Create CSV log file if it doesn’t exist
-if not os.path.exists(LOG_FILE):
-    with open(LOG_FILE, "w", newline="", encoding="utf-8") as f:
-        csv.writer(f).writerow(["user_input", "bot_response", "emotion"])
+def chatbot_response(user_input, session_id="default"):
+    """
+    Main chatbot function that connects all components
+    and uses MongoDB for conversation memory.
+    """
 
-def save_to_history(user_input, bot_response, emotion):
-    """Save chat turn to history CSV."""
-    with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
-        csv.writer(f).writerow([user_input, bot_response, emotion])
-
-def chatbot_response(user_input):
-    """Main chatbot function that connects all components."""
     # Step 1: Clean user input
     clean_input = clean_text(user_input)
 
-    # Step 2: Detect emotion using the model
+    # Step 2: Detect emotion
     emotion, _ = detect_emotion(clean_input)
 
-    # Step 3: Apply negation rule to override emotion if needed
+    # Step 3: Apply negation correction
     neutral_check = handle_negation(user_input)
+
     if neutral_check == "neutral":
         emotion = "neutral"
 
-    # Step 4: Prepare conversation history for LLM
-    history_for_ollama = [{"user": u, "bot": b} for u, b, _ in conversation_memory]
+    # Step 4: Fetch previous chats from MongoDB
+    previous_chats = get_recent_chats(session_id, limit=5)
 
-    # Step 5: Generate AI reply
-    reply_text, _ = get_ollama_response(user_input, emotion, history_for_ollama)
+    history_for_ollama = [
+        {"user": chat["user"], "bot": chat["bot"]}
+        for chat in previous_chats
+    ]
 
-    # Step 6: Convert reply to speech
+    # Step 5: Generate AI response
+    reply_text, _ = get_ollama_response(
+        user_input,
+        emotion,
+        history_for_ollama
+    )
+
+    # Step 6: Convert response to speech
     audio_path = text_to_speech(reply_text)
 
-    # Step 7: Log conversation
-    conversation_memory.append((user_input, reply_text, emotion))
-    save_to_history(user_input, reply_text, emotion)
+    # Step 7: Save chat into MongoDB
+    save_chat(user_input, reply_text, emotion, session_id)
 
-    # Step 8: Return final outputs
+    # Step 8: Return output
     return {
         "bot": reply_text,
         "emotion": emotion,

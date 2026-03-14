@@ -5,10 +5,6 @@
 .idea/
 .vscode/
 
-# Logs
-logs/
-*.csv
-
 # Models / Large files
 models/
 voice_to_text/models/
@@ -16,7 +12,7 @@ voice_to_text/models/
 # Python
 __pycache__/
 *.pyc
-
+*.pkl
 # OS
 .DS_Store
 Thumbs.db
