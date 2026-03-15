@@ -125,19 +125,17 @@ The chatbot will start on:
 http://localhost:8501
 🔊 Voice Interaction Flow
 
-1️⃣ Click 🎤 Speak
+1. Click 🎤 Speak
 
-2️⃣ Beep sound plays
+2. Voice recording starts
 
-3️⃣ Voice recording starts
+3. Speech converted to text
 
-4️⃣ Speech converted to text
+4. Emotion detected
 
-5️⃣ Emotion detected
+5. AI generates empathetic response
 
-6️⃣ AI generates empathetic response
-
-7️⃣ Response spoken via TTS
+6. Response spoken via TTS
 
 💾 Conversation Memory
 

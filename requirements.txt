@@ -11,3 +11,4 @@ faster-whisper
 sounddevice
 scipy
 gtts
+openai
