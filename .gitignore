@@ -13,6 +13,6 @@ voice_to_text/models/
 __pycache__/
 *.pyc
 *.pkl
-# OS
+# OSstra
 .DS_Store
 Thumbs.db

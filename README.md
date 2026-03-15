@@ -1,132 +1,207 @@
-# 🎭 Emotion-Aware Voice Chatbot Assistant
+🎭 Emotion-Aware Mental Health Assistant
 
-An intelligent **Emotion-Aware Voice Chatbot** that detects user emotions from text or voice, generates context-aware responses using an LLM, and replies with both **text and speech**.
+An intelligent Emotion-Aware AI Chatbot that detects a user’s emotional state from text or voice, generates empathetic responses using an LLM, and replies with both text and speech.
 
----
+This system aims to act as a mental health support companion by understanding emotional context during conversations.
 
-## 🚀 Features
+🚀 Features
 
-- 🎤 Voice input using microphone
-- 🔊 Audio feedback (beep sound before recording)
-- 🧠 Emotion detection using **DistilRoBERTa**
-- 🤖 AI-generated responses using **Ollama / LLM**
-- 🗣️ Text-to-Speech response
-- 🧾 Chat history logging (CSV)
-- 🌐 Streamlit-based UI
+🎤 Voice Input using microphone
 
----
+🔊 Audio feedback before recording
 
-## 🧠 Emotions Detected
+🧠 Emotion Detection using Transformer models
 
-Using the pre-trained model  
-`j-hartmann/emotion-english-distilroberta-base`
+🤖 Context-Aware AI Responses using an LLM
 
-Supported emotions include:
-- joy
-- neutral
-- sadness
-- anger
-- fear
-- surprise
-- disgust
+🗣️ Text-to-Speech Response
 
-> ⚠️ Note: Emotions like **love** and **sarcasm** are not detected by this model.
+💬 Conversation Memory with MongoDB
 
----
+🧾 Session-based Chat History
 
-## 🏗️ Project Structure
+🌐 Interactive Web Interface with Streamlit
 
-emotion_chatbot/
+🧠 Emotions Detected
+
+The chatbot uses the Hugging Face model
+j-hartmann/emotion-english-distilroberta-base
+
+Supported emotions:
+
+Joy 😊
+
+Neutral 😐
+
+Sadness 😢
+
+Anger 😠
+
+Fear 😨
+
+Surprise 😲
+
+Disgust 🤢
+
+⚠️ Note
+
+The model does not detect:
+
+Love ❤️
+
+Sarcasm 😏
+
+🏗️ Project Structure
+emotion-aware-mental-health-assistant
 │
-├── app/
-│ ├── main.py # Streamlit app
-│ ├── chatbot.py # Main chatbot logic
-│ └── static/
-│ └── beep_sound.wav # Downloaded sound file
+├── app
+│   ├── main.py              # Streamlit UI
+│   └── static
+│       └── avatar.png
 │
-├── src/
-│ ├── emotion_model.py # Emotion detection
-│ ├── voice_to_text.py # Speech-to-text
-│ ├── text_to_speech.py # Text-to-speech
-│ ├── llm_response.py # LLM response handler
-│ └── preprocessing.py # Text cleaning
-│
-├── logs/
-│ └── chat_history.csv
+├── src
+│   ├── chatbot.py           # Main chatbot pipeline
+│   ├── emotion_model.py     # Emotion detection
+│   ├── preprocessing.py     # Text cleaning
+│   ├── llm_response.py      # LLM response generator
+│   ├── voice_to_text.py     # Speech recognition
+│   ├── text_to_speech.py    # TTS generation
+│   └── db
+│       └── mongo_client.py  # MongoDB connection
 │
 ├── requirements.txt
+├── packages.txt
+├── .gitignore
 └── README.md
+🧩 Tech Stack
+Programming
 
+Python 3.10+
 
----
+Framework
 
-## 🧩 Tech Stack
+Streamlit
 
-- Python 3.10+
-- Streamlit
-- Hugging Face Transformers
-- Faster-Whisper
-- SoundDevice / SimpleAudio
-- Ollama (LLM backend)
+Machine Learning
 
----
+Hugging Face Transformers
 
-## ⚙️ Installation
+DistilRoBERTa
 
-### 1️⃣ Clone the Repository
-```bash
+Speech Processing
+
+Faster Whisper
+
+Text-to-Speech (TTS)
+
+Database
+
+MongoDB Atlas
+
+LLM Backend
+
+Ollama
+
+⚙️ Installation
+1️⃣ Clone the Repository
 git clone https://github.com/AnikeshGhosh03/emotion-aware-mental-health-assistant.git
-cd emotion_chatbot
-
+cd emotion-aware-mental-health-assistant
 2️⃣ Create Virtual Environment
 python -m venv venv
-source venv/bin/activate      # Linux / Mac
-venv\Scripts\activate         # Windows
 
+Activate environment:
+
+Windows
+venv\Scripts\activate
+Linux / Mac
+source venv/bin/activate
 3️⃣ Install Dependencies
 pip install -r requirements.txt
-
 ▶️ Run the Application
 streamlit run app/main.py
 
-🔊 Audio Recording Behavior
+The chatbot will start on:
 
-Click 🎤 Speak button
+http://localhost:8501
+🔊 Voice Interaction Flow
 
-Button turns red
+1️⃣ Click 🎤 Speak
 
-Beep sound plays
+2️⃣ Beep sound plays
 
-Records for 7 seconds
+3️⃣ Voice recording starts
 
-Button resets automatically
+4️⃣ Speech converted to text
 
-🧪 Model Used
-Emotion Model:
-j-hartmann/emotion-english-distilroberta-base
+5️⃣ Emotion detected
 
-📁 Logs
+6️⃣ AI generates empathetic response
+
+7️⃣ Response spoken via TTS
+
+💾 Conversation Memory
 
 All conversations are stored in:
 
-logs/chat_history.csv
+MongoDB
 
+Example document:
+
+{
+  "session_id": "user_1",
+  "user": "I feel stressed",
+  "bot": "I'm sorry you're feeling stressed. Want to talk about it?",
+  "emotion": "sadness",
+  "timestamp": "2026-03-15"
+}
+
+This allows the chatbot to maintain context across messages.
+
+🔐 Security
+
+Sensitive credentials are not stored in code.
+
+Instead environment variables are used:
+
+MONGO_URI = your_mongodb_connection_string
 🛑 Limitations
 
 Sarcasm detection not supported
 
-Love emotion not classified
+Love emotion not detected
 
-English language only
+Primarily optimized for English
+
+Microphone recording may not work on some cloud deployments
 
 🔮 Future Improvements
 
-Fine-tuned emotion model
+Fine-tuned emotion classification model
 
-Sarcasm detection
+Sarcasm detection module
 
-Multilingual support
+Multilingual emotion recognition
 
-Emotion-specific voice modulation
+Emotion-adaptive voice tone
 
-UI animations
+Animated conversational UI
+
+Mobile application version
+
+👨‍💻 Author
+
+Anikesh Ghosh
+
+AI & Software Development Projects focused on:
+
+Machine Learning
+
+Conversational AI
+
+Emotion Detection Systems
+
+Data-Driven Applications
+
+⭐ If You Like This Project
+
+Give it a star ⭐ on GitHub!
