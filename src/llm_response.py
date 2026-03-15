@@ -5,18 +5,27 @@ from datetime import datetime
 from gtts import gTTS
 from dotenv import load_dotenv
 from openai import OpenAI
+import streamlit as st
 
-# Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
-openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Get API key safely (local + streamlit cloud)
+api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    try:
+        api_key = st.secrets["OPENAI_API_KEY"]
+    except Exception:
+        api_key = None
+
+# Initialize OpenAI client only if key exists
+openai_client = OpenAI(api_key=api_key) if api_key else None
 
 # Detect cloud environment
 IS_CLOUD = os.getenv("STREAMLIT_RUNTIME") is not None
 
 
-def get_llm_response(
+def get_ollama_response(
     user_message: str,
     emotion: str,
     history=None,
