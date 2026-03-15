@@ -2,7 +2,7 @@
 
 from src.preprocessing import clean_text
 from src.emotion_model import detect_emotion
-from src.llm_response import get_ollama_response
+from src.llm_response import get_llm_response
 from src.text_to_speech import text_to_speech
 from src.db.mongo_client import save_chat, get_recent_chats
 
@@ -31,6 +31,7 @@ def handle_negation(sentence):
 
     return None
 
+
 # ------------------------------------------------------
 
 
@@ -55,25 +56,26 @@ def chatbot_response(user_input, session_id="default"):
     # Step 4: Fetch previous chats from MongoDB
     previous_chats = get_recent_chats(session_id, limit=5)
 
-    history_for_ollama = [
+    history = [
         {"user": chat["user"], "bot": chat["bot"]}
         for chat in previous_chats
     ]
 
-    # Step 5: Generate AI response
-    reply_text, _ = get_ollama_response(
+    # Step 5: Generate AI response (Hybrid LLM)
+    reply_text, audio_path = get_llm_response(
         user_input,
         emotion,
-        history_for_ollama
+        history
     )
 
-    # Step 6: Convert response to speech
-    audio_path = text_to_speech(reply_text)
+    # Step 6: If audio not generated (fallback)
+    if audio_path is None:
+        audio_path = text_to_speech(reply_text)
 
     # Step 7: Save chat into MongoDB
     save_chat(user_input, reply_text, emotion, session_id)
 
-    # Step 8: Return output
+    # Step 8: Return response
     return {
         "bot": reply_text,
         "emotion": emotion,

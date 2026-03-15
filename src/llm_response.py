@@ -16,7 +16,7 @@ openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 IS_CLOUD = os.getenv("STREAMLIT_RUNTIME") is not None
 
 
-def get_ollama_response(
+def get_llm_response(
     user_message: str,
     emotion: str,
     history=None,
